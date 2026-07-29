@@ -10,7 +10,7 @@
 
 | 文件 | 说明 | 样本量 |
 |---|---|---|
-| `data/raw_data.csv` | 原始采集数据 | 约 4800 条 |
+| `data/raw_data.csv` | 原始采集数据 | 4800 条 |
 | `data/cleaned_data.csv` | 清洗后有效数据 | 3381 条 |
 
 ## 技术栈
@@ -30,7 +30,7 @@
 ## 项目结构
 
 ```
-├── data/           # ���据集
+├── data/           # 数据集
 ├── src/            # Python 源码
 ├── output/         # 可视化图表
 ├── powerbi/        # Power BI 交互看板
