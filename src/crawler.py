@@ -59,7 +59,7 @@ def main():
         time.sleep(3)
 
 if __name__ == "__main__":
-    f = open('./数据/原始数据.csv','a',newline='',encoding='utf-8')
+    f = open('data/raw_data.csv', 'w', newline='', encoding='utf-8')
     writer = csv.writer(f)
     writer.writerow(['标题','价格','省份','城市','销量','店铺'])
     driver = ChromiumPage()#  打开浏览器，初始化ChromiumPage对象，并监听特定的网络请求
