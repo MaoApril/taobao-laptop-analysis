@@ -10,7 +10,7 @@
 
 | 文件 | 说明 | 样本量 |
 |---|---|---|
-| `data/raw_data.csv` | 原始采集数据 | 4800 条 |
+| `data/raw_data.csv` | 原始采集数据 | 约 4800 条 |
 | `data/cleaned_data.csv` | 清洗后有效数据 | 3381 条 |
 
 ## 技术栈
@@ -29,12 +29,14 @@
 
 ## 项目结构
 
-├── data/ # 数据集
-├── src/ # Python 源码
-├── output/ # 可视化图表
-├── powerbi/ # Power BI 交互看板
-├── notebooks/ # 分析 notebook
-└── report/ # 项目报告
+```
+├── data/           # ���据集
+├── src/            # Python 源码
+├── output/         # 可视化图表
+├── powerbi/        # Power BI 交互看板
+├── notebooks/      # 分析 notebook
+└── report/         # 项目报告
+```
 
 ## 可视化成果
 
@@ -50,19 +52,19 @@
 ## 如何运行
 
 ```bash
-# 克隆项目
 git clone https://github.com/MaoApril/taobao-laptop-analysis.git
-
-# 安装依赖
+cd taobao-laptop-analysis
 pip install -r requirements.txt
-
-# 运行可视化脚本
 python src/visualization.py
+```
 
-报告与看板
-完整分析报告见 report/taobao_laptop_analysis_report.pdf
-Power BI 交互看板见 powerbi/taobao_laptop_dashboard.pbix（制作中）
-联系方式
-姓名：冒婷婷
-邮箱：3486250452@qq.com
-求职方向：数据分析师（Base 深圳）
+## 报告与看板
+
+- 完整分析报告见 `report/taobao_laptop_analysis_report.pdf`
+- Power BI 交互看板见 `powerbi/taobao_laptop_dashboard.pbix`（制作中）
+
+## 联系方式
+
+- **姓名**：冒婷婷
+- **邮箱**：3486250452@qq.com
+- **求职方向**：数据分析师（Base 深圳）
