@@ -60,7 +60,7 @@ python src/visualization.py
 
 ## 报告与看板
 
-- 完整分析报告见 `report/taobao_laptop_analysis_report.pdf`
+- 完整分析报告见 `report/taobao_laptop_market_analysis.docx`
 - Power BI 交互看板见 `powerbi/taobao_laptop_dashboard.pbix`（制作中）
 
 ## 联系方式
