@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power BI 看板制作指南 · 淘宝笔记本电脑市场分析</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    background: #f0f2f5;
+    color: #2c3e50;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .container { max-width: 960px; margin: 0 auto; background: #fff; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a365d 0%, #2b579a 100%);
+    color: #fff;
+    padding: 48px 40px;
+    text-align: center;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; letter-spacing: 1px; }
+  .header .subtitle {
+    font-size: 15px;
+    opacity: 0.85;
+    margin-top: 10px;
+    font-weight: 300;
+  }
+  .header .meta {
+    margin-top: 16px;
+    display: inline-flex;
+    gap: 24px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.12);
+    padding: 8px 20px;
+    border-radius: 30px;
+  }
+  .header .meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* Section */
+  .section { padding: 36px 40px; border-bottom: 1px solid #eef0f3; }
+  .section:last-child { border-bottom: none; }
+  .step-badge {
+    display: inline-block;
+    background: #2b579a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .section h2 {
+    font-size: 22px;
+    color: #1a365d;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .section h3 {
+    font-size: 16px;
+    color: #2b579a;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    padding-left: 12px;
+    border-left: 3px solid #2b579a;
+  }
+  .section p { margin-bottom: 12px; font-size: 14.5px; color: #4a5568; }
+  .section ol, .section ul { margin: 10px 0 14px 22px; }
+  .section li { margin-bottom: 6px; font-size: 14.5px; color: #4a5568; }
+  .section code {
+    background: #f0f4ff;
+    color: #2b579a;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 13px;
+  }
+  .section pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 18px 22px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 14px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .section pre code { background: none; color: inherit; padding: 0; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  th {
+    background: #2b579a;
+    color: #fff;
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #eef0f3;
+    color: #4a5568;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #f0f4ff; }
+
+  /* Callout */
+  .callout {
+    background: #f0f4ff;
+    border-left: 4px solid #2b579a;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+  }
+  .callout-warn {
+    background: #fff8e6;
+    border-left-color: #f6a609;
+  }
+  .callout-success {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+  }
+  .callout p { margin-bottom: 4px; font-size: 14px; }
+  .callout-title { font-weight: 600; color: #1a365d; margin-bottom: 4px; }
+
+  /* Dashboard layout mockup */
+  .dashboard-mock {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 18px 0;
+    display: grid;
+    grid-template-columns: 130px 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    gap: 8px;
+  }
+  .mock-title {
+    grid-column: 1 / -1;
+    text-align: center;
+    background: #1a365d;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .mock-slicer {
+    grid-row: 2 / 6;
+    background: #e0e7ff;
+    border: 1px solid #818cf8;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+    font-size: 11px;
+    color: #3730a3;
+  }
+  .mock-slicer .slicer-title { font-weight: 600; margin-bottom: 8px; font-size: 10px; }
+  .mock-slicer .slicer-item {
+    background: #fff;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+  }
+  .mock-kpi {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 14px 8px;
+    text-align: center;
+    font-size: 10px;
+    color: #64748b;
+  }
+  .mock-kpi .kpi-value { font-size: 20px; font-weight: 700; color: #2b579a; display: block; margin-bottom: 2px; }
+  .mock-chart {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 24px 10px;
+    text-align: center;
+    font-size: 11px;
+    color: #64748b;
+    position: relative;
+  }
+  .mock-chart .chart-icon { font-size: 22px; margin-bottom: 4px; display: block; }
+  .mock-chart-wide { grid-column: span 2; }
+  .mock-chart-full { grid-column: 2 / -1; }
+
+  /* Color palette */
+  .palette {
+    display: flex;
+    gap: 12px;
+    margin: 14px 0;
+    flex-wrap: wrap;
+  }
+  .color-chip {
+    flex: 1;
+    min-width: 120px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .color-block { height: 50px; }
+  .color-label { padding: 6px 10px; font-size: 12px; background: #fff; }
+  .color-label .hex { font-weight: 600; color: #1a365d; }
+
+  /* FAQ */
+  .faq-item {
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+  .faq-q { font-weight: 600; color: #1a365d; margin-bottom: 6px; font-size: 14.5px; }
+  .faq-q::before { content: "Q: "; color: #2b579a; }
+  .faq-a { color: #4a5568; font-size: 14px; }
+  .faq-a::before { content: "A: "; color: #22c55e; font-weight: 600; }
+
+  /* Footer */
+  .footer {
+    background: #1a365d;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+  }
+  .footer a { color: #93c5fd; text-decoration: none; }
+
+  /* Print */
+  @media print {
+    body { background: #fff; }
+    .container { box-shadow: none; }
+    .section { page-break-inside: avoid; }
+    .dashboard-mock { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Power BI 看板制作指南</h1>
+    <div class="subtitle">淘宝笔记本电脑市场分析 · 交互式看板从零搭建</div>
+    <div class="meta">
+      <span>预计用时 2-3 小时</span>
+      <span>含软件安装</span>
+      <span>7 个步骤</span>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="section">
+    <span class="step-badge">STEP 1</span>
+    <h2>下载安装 Power BI Desktop</h2>
+    <p>预计用时：10 分钟</p>
+    <ol>
+      <li>打开浏览器访问：<code>https://powerbi.microsoft.com/zh-cn/desktop/</code></li>
+      <li>点击「免费下载」</li>
+      <li>下载后双击 <code>PBIDesktopSetup.exe</code> 安装，全部默认下一步</li>
+      <li>安装完成后打开 Power BI Desktop，弹出登录窗口点「取消」跳过（不需要登录也能用）</li>
+    </ol>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="section">
+    <span class="step-badge">STEP 2</span>
+    <h2>导入数据</h2>
+    <p>预计用时：5 分钟。已为你生成两个 Power BI 专用数据文件：</p>
+    <table>
+      <thead>
+        <tr><th>文件</th><th>位置</th><th>用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>powerbi_data.csv</code></td><td><code>data/powerbi_data.csv</code></td><td>主数据（9列：标题、价格、价格区间、品牌、笔记本类型、省份、城市、销量、店铺）</td></tr>
+        <tr><td><code>word_freq.csv</code></td><td><code>data/word_freq.csv</code></td><td>词云专用（已用 jieba 分词 + 停用词过滤，Top150 词频）</td></tr>
+      </tbody>
+    </table>
+    <h3>导入步骤</h3>
+    <ol>
+      <li>打开 Power BI Desktop</li>
+      <li>点击顶部菜单「主页」→「获取数据」→「文本/CSV」</li>
+      <li>选择 <code>D:\taobao-laptop-analysis\data\powerbi_data.csv</code></li>
+      <li>预览窗口能看到数据，点「加载」</li>
+      <li>再次「获取数据」→「文本/CSV」→ 选择 <code>word_freq.csv</code> →「加载」</li>
+    </ol>
+    <div class="callout">
+      <p class="callout-title">检查数据</p>
+      <p>导入后，在右侧「数据」面板应能看到两个表：<code>powerbi_data</code>（9列）和 <code>word_freq</code>（2列：词语、频次）</p>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="section">
+    <span class="step-badge">STEP 3</span>
+    <h2>数据类型设置</h2>
+    <p>预计用时：3 分钟。导入后需要确认字段类型正确：</p>
+    <ol>
+      <li>点击左侧第三个图标「数据视图」（表格图标）</li>
+      <li>选中 <code>powerbi_data</code> 表</li>
+      <li>点击「价格」列 → 顶部菜单「列工具」→「数据类型」→ 选「固定十进制数」</li>
+      <li>点击「销量」列 → 同上设为「整数十进制数」</li>
+      <li>检查「价格区间」「品牌」「笔记本类型」应为「文本」类型</li>
+    </ol>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="section">
+    <span class="step-badge">STEP 4</span>
+    <h2>创建看板（核心）</h2>
+    <p>预计用时：约 1 小时。点击左侧第二个图标回到「报表视图」（柱状图图标），开始逐个创建图表。</p>
+
+    <h3>图表 1：KPI 卡片 × 4（顶部指标行）</h3>
+    <table>
+      <thead><tr><th>卡片</th><th>字段</th><th>聚合方式</th><th>格式</th></tr></thead>
+      <tbody>
+        <tr><td>商品总数</td><td><code>标题</code></td><td>计数</td><td>字号 24pt，标签「商品总数」</td></tr>
+        <tr><td>总销量</td><td><code>销量</code></td><td>求和</td><td>字号 24pt，千位分隔符</td></tr>
+        <tr><td>平均价格</td><td><code>价格</code></td><td>平均值</td><td>字号 24pt，货币 ¥ 格式</td></tr>
+        <tr><td>品牌数量</td><td><code>品牌</code></td><td>计数(不重复)</td><td>字号 24pt</td></tr>
+      </tbody>
+    </table>
+    <p><strong>操作</strong>：点空白画布 → 右侧「可视化」面板点「卡片」图标 → 把字段拖到「字段」框 → 点字段右边下拉箭头改聚合方式 → 在「格式」里设置字号和标签</p>
+
+    <h3>图表 2：价格区间商品数量（柱状图）</h3>
+    <table>
+      <thead><tr><th>配置项</th><th>字段</th></tr></thead>
+      <tbody>
+        <tr><td>X 轴</td><td><code>价格区间</code></td></tr>
+        <tr><td>Y 轴（值）</td><td><code>标题</code> → 计数</td></tr>
+      </tbody>
+    </table>
+    <p>排序：点图表右上角「...」→「排序依据」→ 选「价格区间」→ 升序。格式：数据标签打开，标题「价格区间商品数量」</p>
+
+    <h3>图表 3：价格区间销量分布（柱状图）</h3>
+    <table>
+      <thead><tr><th>配置项</th><th>字段</th></tr></thead>
+      <tbody>
+        <tr><td>X 轴</td><td><code>价格区间</code></td></tr>
+        <tr><td>Y 轴（值）</td><td><code>销量</code> → 求和</td></tr>
+      </tbody>
+    </table>
+    <p>排序：按价格区间升序。格式：数据标签打开，柱形颜色改为绿色系</p>
+
+    <h3>图表 4：笔记本类型销量分布（饼图）</h3>
+    <table>
+      <thead><tr><th>配置项</th><th>字段</th></tr></thead>
+      <tbody>
+        <tr><td>图例</td><td><code>笔记本类型</code></td></tr>
+        <tr><td>值</td><td><code>销量</code> → 求和</td></tr>
+      </tbody>
+    </table>
+    <p>格式：详细信息标签选「百分比」，标题「笔记本类型销量分布」。想做成环形图：格式里打开「圆环图半径」→ 设为 40%</p>
+
+    <h3>图表 5：品牌销量 Top15（条形图）</h3>
+    <table>
+      <thead><tr><th>配置项</th><th>字段</th></tr></thead>
+      <tbody>
+        <tr><td>Y 轴</td><td><code>品牌</code></td></tr>
+        <tr><td>X 轴（值）</td><td><code>销量</code> → 求和</td></tr>
+      </tbody>
+    </table>
+    <p><strong>只显示 Top15</strong>：把 <code>品牌</code> 拖到筛选器区域 → 选「前 N 个」→「顶部」→「15」→ 按 <code>销量</code> 的「求和」</p>
+
+    <h3>图表 6：产地销量 Top10（条形图）</h3>
+    <table>
+      <thead><tr><th>配置项</th><th>字段</th></tr></thead>
+      <tbody>
+        <tr><td>Y 轴</td><td><code>城市</code></td></tr>
+        <tr><td>X 轴（值）</td><td><code>销量</code> → 求和</td></tr>
+      </tbody>
+    </table>
+    <p><strong>处理「未知」城市</strong>：把 <code>城市</code> 拖到筛选器 →「高级筛选」→ 取消勾选「未知」。再设「前 N 个」→「顶部」→「10」</p>
+
+    <h3>图表 7：商品标题词云（需安装自定义视觉对象）</h3>
+    <div class="callout callout-warn">
+      <p class="callout-title">安装词云插件</p>
+      <p>Power BI 默认没有词云：在可视化面板点「...」→「获取更多视觉对象」→ 搜索 <code>Word Cloud</code> → 点「添加」</p>
+    </div>
+    <table>
+      <thead><tr><th>配置项</th><th>字段（来自 word_freq 表）</th></tr></thead>
+      <tbody>
+        <tr><td>Category（类别）</td><td><code>词语</code></td></tr>
+        <tr><td>Values（值）</td><td><code>频次</code></td></tr>
+      </tbody>
+    </table>
+    <p>格式：最大词数设为 100，旋转文字关闭，字体改为「微软雅黑」</p>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="section">
+    <span class="step-badge">STEP 5</span>
+    <h2>添加切片器实现联动</h2>
+    <p>预计用时：10 分钟。切片器是 Power BI 看板最大的亮点——点一个筛选条件，所有图表自动联动。</p>
+    <table>
+      <thead><tr><th>切片器</th><th>字段</th><th>格式建议</th></tr></thead>
+      <tbody>
+        <tr><td>价格区间</td><td><code>价格区间</code></td><td>标题「价格区间筛选」</td></tr>
+        <tr><td>品牌</td><td><code>品牌</code></td><td>样式选「下拉菜单」，标题「品牌筛选」</td></tr>
+        <tr><td>笔记本类型</td><td><code>笔记本类型</code></td><td>标题「类型筛选」</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-success">
+      <p class="callout-title">验证联动</p>
+      <p>点切片器选「联想」→ 看板上所有图表自动只显示联想数据 → 再点「游戏本」→ 所有图表进一步过滤。这就是交互式看板的核心价值。</p>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="section">
+    <span class="step-badge">STEP 6</span>
+    <h2>美化排版</h2>
+    <p>预计用时：15 分钟</p>
+
+    <h3>页面标题</h3>
+    <p>点击顶部菜单「插入」→「文本框」→ 输入「淘宝笔记本电脑市场分析看板」→ 字号 18pt，加粗，深蓝色（#2B579A）→ 拖到页面顶部居中</p>
+
+    <h3>看板布局设计</h3>
+    <div class="dashboard-mock">
+      <div class="mock-title">淘宝笔记本电脑市场分析看板</div>
+      <div class="mock-slicer">
+        <div class="slicer-title">筛选器</div>
+        <div class="slicer-item">价格区间</div>
+        <div class="slicer-item">品牌</div>
+        <div class="slicer-item">类型</div>
+      </div>
+      <div class="mock-kpi"><span class="kpi-value">3,228</span>商品总数</div>
+      <div class="mock-kpi"><span class="kpi-value">86万</span>总销量</div>
+      <div class="mock-kpi"><span class="kpi-value">¥4,521</span>平均价格</div>
+      <div class="mock-chart"><span class="chart-icon">📊</span>价格区间<br>商品数量</div>
+      <div class="mock-chart"><span class="chart-icon">📈</span>价格区间<br>销量分布</div>
+      <div class="mock-chart"><span class="chart-icon">🥧</span>类型销量<br>分布饼图</div>
+      <div class="mock-chart mock-chart-wide"><span class="chart-icon">📊</span>品牌销量 Top15</div>
+      <div class="mock-chart"><span class="chart-icon">📊</span>产地 Top10</div>
+      <div class="mock-chart mock-chart-full"><span class="chart-icon">☁️</span>消费者关注热点词云</div>
+    </div>
+
+    <h3>主题配色</h3>
+    <div class="palette">
+      <div class="color-chip">
+        <div class="color-block" style="background:#1a365d;"></div>
+        <div class="color-label">深蓝主色 <span class="hex">#1A365D</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-block" style="background:#2b579a;"></div>
+        <div class="color-label">标题蓝 <span class="hex">#2B579A</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-block" style="background:#22c55e;"></div>
+        <div class="color-label">销量绿 <span class="hex">#22C55E</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-block" style="background:#f6a609;"></div>
+        <div class="color-label">强调橙 <span class="hex">#F6A609</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-block" style="background:#f8fafc;border:1px solid #e2e8f0;"></div>
+        <div class="color-label">背景灰 <span class="hex">#F8FAFC</span></div>
+      </div>
+    </div>
+    <p>顶部菜单「视图」→「主题」→ 选浅色主题。统一标题字号 12pt，数据标签字号 9-10pt。画布大小设为 1280×800（16:10）</p>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="section">
+    <span class="step-badge">STEP 7</span>
+    <h2>保存与导出</h2>
+    <p>预计用时：5 分钟</p>
+    <h3>保存 .pbix 文件</h3>
+    <p><code>文件</code> → <code>另存为</code> → 保存到 <code>D:\taobao-laptop-analysis\powerbi\taobao_laptop_dashboard.pbix</code></p>
+    <h3>导出 PDF（用于简历/作品集）</h3>
+    <p><code>文件</code> → <code>导出</code> → <code>导出到 PDF</code> → 保存到 <code>D:\taobao-laptop-analysis\output\dashboard_preview.pdf</code></p>
+    <h3>上传到 GitHub</h3>
+    <pre><code>cd /d D:\taobao-laptop-analysis
+git add .
+git commit -m "add: Power BI interactive dashboard"
+git push origin main</code></pre>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <h2>常见问题</h2>
+    <div class="faq-item">
+      <div class="faq-q">词云不显示中文？</div>
+      <div class="faq-a">在词云格式设置里找到「字体」，改成「微软雅黑」或「SimHei」</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">饼图显示太多「其他类型」？</div>
+      <div class="faq-a">在筛选器里把 <code>笔记本类型</code> 的「其他类型」取消勾选，只保留游戏本/轻薄本/二合一</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">条形图排序不对？</div>
+      <div class="faq-a">点图表右上角的「...」→「排序依据」→ 选你要排序的字段 → 再点切换升序/降序</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">切片器选了之后图表变空白？</div>
+      <div class="faq-a">说明该筛选条件下没有数据，正常现象。点切片器右上角的「清除选择」橡皮擦图标恢复</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">价格区间排序是乱的？</div>
+      <div class="faq-a">在「数据视图」里给「价格区间」列设置「按列排序」→ 选一个排序列。或在 Power Query 里手动设置排序顺序</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Power BI 看板制作指南 · 淘宝笔记本电脑市场分析项目</p>
+    <p style="margin-top:6px;">GitHub: <a href="https://github.com/MaoApril/taobao-laptop-analysis">github.com/MaoApril/taobao-laptop-analysis</a></p>
+  </div>
+
+</div>
+</body>
+</html>
